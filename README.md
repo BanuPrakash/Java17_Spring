@@ -171,5 +171,204 @@ module com.adobe.security {
 
 4) Unnamed modules --> "Jar" file added to classpath, not to "module path". Backward compatibility
 
-======
 
+```
+Automatic Modules:
+common.jar ==> built without "named module" --> doesn't contain "module-info.java"
+
+When this jar is added to "module-path" in our project created as named module --> "common" becomes "Automatic modules"
+```
+
+
+Maven Modules and JPMS Module system and ServiceLocator
+
+Step 1:
+```
+MultiModuleServiceProject --> Java -> Maven Project
+pom.xml -->  <packaging>pom</packaging>
+```
+Step 2:
+```
+Right click --> New Module --> api
+module api {
+    exports com.adobe.api;
+}
+```
+Step 3:
+Right click --> New Module --> impl
+```
+mvn package
+
+java -p client/target/client-1.0.0.jar:api/target/api-1.0.0.jar:impl/target/impl-1.0.0.jar -m client/client.Main
+
+jlink --module-path client/target/client-1.0.0.jar:api/target/api-1.0.0.jar:impl/target/impl-1.0.0.jar --add-modules client,api,impl --output myimage --launcher MYAPP=client/client.Main
+
+"myimage" is self-contained with necessary "java module" --> Docker
+
+MultiModuleServiceProject % ./myimage/bin/MYAPP
+STDOUT: Log written by class com.adobe.impl.LogServiceStdOut
+
+```
+
+
+Prior to Java 9 after Java 7
+
+com.example.CodecSet --> interface
+com.example.impl.StandardCodecs --> implementation
+
+create a file "fully qualifed interface name" 
+
+META-INF/services/com.example.CodecSet
+com.example.impl.StandardCodecs    # Standard codecs
+
+ServiceLoader<CodecSet> loader
+     = ServiceLoader.load(CodecSet.class);
+
+
+
+CQRS
+
+insertProduct() --> Write Database impl and Read Database thro Queue
+
+
+---
+
+Feature 2: use typecasted variable directly
+```
+
+public static void main(String[] args) {
+	Object obj = "Hello World";
+	if(obj instanceof String) {
+		String s = (String) obj;
+		System.out.println(s.length()); 
+	}
+}
+
+With Java 12:
+
+public static void main(String[] args) {
+	Object obj = "Hello World";
+	if(obj instanceof String s) {
+		//String s = (String) obj; no need to explicit typecast once again
+		System.out.println(s.length()); 
+	}
+}
+```
+
+Feature 3: Arrow Switch Statements, yield
+```
+public class SwitchExample1 {
+    public static void main(String[] args) {
+        System.out.println(getValue("c"));
+
+    }
+
+    private static int getValue(String mode) {
+        // java 12 introduced Arrow
+        int result = switch (mode) {
+            case "a", "b" -> 1;
+            case "c" -> 2;
+//            case "d", "e" -> {
+//                System.out.println("d and e");
+//                return 3; // won't work
+//            }
+            default -> 0;
+        };
+        return  result;
+    }
+}
+
+```
+
+Feature 4: java 13 introduced "yield" to solve above problem
+
+```
+public class SwitchExample1 {
+    public static void main(String[] args) {
+        System.out.println(getValue("c"));
+
+    }
+
+    private static int getValue(String mode) {
+        // java 13 introduced yield instead of using Arrow
+        int result = switch (mode) {
+            case "a", "b": yield  1;
+            case "c": yield 2;
+            case "d", "e": {
+                System.out.println("d and e");
+                yield 3; // instead of return use yield
+            }
+            default: yield  0;
+        };
+        return  result;
+    }
+}
+
+```
+
+Feature 5: sealed --> Java 15 version
+Main Goal: a sealed type has a fixed set of direct subtypes
+* The direct subtypes of a sealed type must be listed in a "permits" clause or, if there is no such clause it should be in a single source file
+* direct subtypes of a sealed type must be final, sealed or non-sealed
+```
+
+sealed interface JSONValue permits JSONObject, JSONArray, JSONPrimitive {
+
+}
+
+// valid
+final class JSONObject implements JSONValue {
+
+}
+
+sealed class JSONPrimitive implements JSONValue permits JSONString, JSONNumber, JSONBoolean, JSONNull {
+
+}
+
+```
+
+use case of "non-sealed"
+
+sealed class Node permits Element, Text, Comment, CDATASection {
+
+}
+
+we have many Element types --> for example HTML elements div, p, ...
+We can have our own web-components ==> Adobe Web components
+<card></card>
+
+non-sealed class Element extends Node {
+
+}
+
+<person>
+	<age>33</age>
+	<!-- -->
+</person>
+
+=====
+
+Feature 6: Record
+
+record --> final , immutable data object --> DTOs --> Similar to @Value of lombok
+
+record ProductDTO(String name, double price) {}
+
+--> generate constructor, getters, toString, equals
+--> no setters
+
+new ProductDTO("iPhone", 89000.00);
+
+```
+public sealed interface TrafficLight permits RedLight{
+}
+
+record RedLight() implements  TrafficLight {}
+
+```
+
+Patterns in switch are not supported at language level '17'
+
+ javac --source 17 --enable-preview -Xlint:preview *.java
+
+ =======
