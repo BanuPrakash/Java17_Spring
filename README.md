@@ -372,3 +372,150 @@ Patterns in switch are not supported at language level '17'
  javac --source 17 --enable-preview -Xlint:preview *.java
 
  =======
+
+Day 2
+
+Recap:
+Java 9 - 17 features
+1) Jigsaw Project ==> JPMS, JLink
+2) sealed, permits, final, non-sealed
+3) new way to  typecast in conditional statement
+4) arrow in switch statement
+5) "yield"
+6) record
+
+Record --> immutable objects --> to reduce bilierplate code in DTOs
+
+```
+
+public record Person(String name, int age) {}
+
+public class Person(String name, int age) {
+	constructor
+	getters
+	hashCode
+	equals
+	string
+}
+
+override the default behaviour
+
+public record Person(String name, int age) {
+	// constructor
+	public Person {
+		if(age < 0) {
+			throw new IllegalArgumentException("Age should be positive value");
+		}
+	}
+}
+
+public record Person(String name, int age) {
+	// getter
+	@Override
+	public String name() {
+		return name.toUpperCase();
+	}
+}
+```
+
+Records has temporary tuples
+
+public static void main(String[] args) {
+	System.out.println(longest(Stream.of("Potter", "Angelina", "Brad", "George"));
+}
+// Brad, 4
+// Potter, 6
+private static String longest(Stream<String> stream) {
+	record StrLen(String s, int length) {}
+	return stream.map(s -> new StrLen(s, s.length()))
+		.max(Comparator.comparingInt(StrLen:length))
+		.map(strRecord -> strRecord.s);
+}
+
+====
+
+Feature JShell --> Java 9 --> REPL
+The Java Shell tool (JShell) is an interactive tool for learning the Java programming language and prototyping Java code.
+
+jshell
+jshell> write java statements
+jshell> /exit
+
+----
+
+Local variable type inference --> Java 10
+Java 10 introcuded a "var" keyword
+
+String text = "Hello Java";
+var text = "Hello Java";
+
+variables declared with "var" are still statically typed
+// ArrayList<Map<String,List<Integer>>>() myData = ...
+var myData = new ArrayList<Map<String,List<Integer>>>();
+for(data : myData) {
+	
+}
+// Cannot infer type:
+1) var data; // not valid
+2) var nothing = null; // not valid
+3) var lambda = () -> System.out.println("Not Valid");
+
+Predicate<Integer> pred = (var t) -> true; // valid
+
+================
+
+CDS and Application CDS
+
+Class Data Sharing --> Java 10
+list of classes --> only JDK classes
+
+JRE --> ClassLoader
+	* findLoadedClass(), loadClass() / findSystemClass(), verifyClass(), defineClass() ==> JVM Class Metaspace
+
+java -Xshare:dump
+uses
+/Library/Java/JavaVirtualMachines/jdk-17.0.5.jdk/Contents/Home/lib/classlist
+and 
+create shared archive file /Library/Java/JavaVirtualMachines/jdk-17.0.5.jdk/Contents/Home/lib/server/classes.jsa
+
+
+Java 12 --> Application Class data Sharing
+
+codes/
+java -jar AppCDS.jar 
+Started Demo1Application in 0.874 seconds
+
+java -XX:ArchiveClassesAtExit=appCDS.jsa -jar AppCDS.jar
+
+java -XX:SharedArchiveFile=appCDS.jsa -jar AppCDS.jar
+Started Demo1Application in 0.703 seconds
+
+javac Sample.java
+% java -XX:ArchiveClassesAtExit=sampleCDS.jsa -XX:DumpLoadedClassList=hello.lst Sample
+
+% java -Xshare:on -XX:SharedArchiveFile=sampleCDS.jsa Sample
+
+% java -verbose -Xshare:on -XX:SharedArchiveFile=sampleCDS.jsa Sample
+
+====================
+
+Garbage Collection:
+1) EpsilonGC --> Java 11
+A No-Op Experimental Garbage Collector
+Garbage Collector only for memory allocation and doesn't clear memory
+
+* MemoryLeak 
+* Short running application -> Finapp -> Start app @ 9:00 and shutdown by @5:00
+
+---
+
+Java 9 Feature : run single file without compilation
+java MemoryPolluter.java 
+
+We are having GC Running
+
+ java -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC MemoryPolluter.java
+
+======
+
+
