@@ -753,3 +753,61 @@ SpringApplication.run ==> similar to new AnnotationConfigApplicationContext()
 2) @EnableAutoConfiguration ==> required built-in beans based on type of application [beans for spring "jar"]
 3) @Configuration
 ```
+
+Could not autowire. There is more than one bean of 'EmployeeDao' type.
+Beans:
+employeeDaoDbImpl   (EmployeeDaoDbImpl.java) 
+employeeDaoMongoImpl   (EmployeeDaoMongoImpl.java)
+
+Solution 1: @Primary
+@Primary
+@Repository
+public class EmployeeDaoMongoImpl implements  EmployeeDao{
+
+@Repository
+public class EmployeeDaoDbImpl implements  EmployeeDao{
+
+Solution 2: @Qualifier
+remove @Primary
+
+and add
+ @Autowired
+ @Qualifier("employeeDaoMongoImpl")
+ private EmployeeDao employeeDao; // autowire by type
+
+Solution 3: @Profile
+@Repository
+@Profile("dev")
+public class EmployeeDaoMongoImpl implements  EmployeeDao{
+
+@Repository
+@Profile("prod")
+public class EmployeeDaoDbImpl implements  EmployeeDao{
+
+application.properties
+spring.profiles.active=dev
+
+OR
+
+program arguments:
+java --spring.profiles.active=dev pck.DemoApplication
+
+
+
+Solution 4: Custom properties
+application.properties
+dao=JDBC
+
+@ConditionalOnProperty(name="dao", havingValue = "MONGO")
+public class EmployeeDaoMongoImpl implements  EmployeeDao{
+
+@ConditionalOnProperty(name="dao", havingValue = "JDBC")
+public class EmployeeDaoDbImpl implements  EmployeeDao{
+
+
+Solution 5:
+@ConditionalOnMissingBean(EmployeeDaoMongoImpl.class)
+public class EmployeeDaoDbImpl implements  EmployeeDao{
+
+============
+
