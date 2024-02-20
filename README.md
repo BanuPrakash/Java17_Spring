@@ -518,4 +518,238 @@ We are having GC Running
 
 ======
 
+2) Java 9 --> CMS old GC is no longer supported
 
+G1GC --> Garbage First Garbage Collector --> recommended for Heap size > 4GB
+
+Partitions of heap area of equal size (1MB to 32MB)
+
+
+======================
+
+Java 12: Multiline String
+
+jshell> String s  ="""
+   ...> Hello Wordl
+   ...> 123
+   ...> Good Day"""
+
+================================
+
+Spring and Spring Boot Framework
+
+SOLID Desing Principles:
+D --> Dependency Injection
+
+OOP --> in Real world, objects works based on DI [IOC]
+
+Spring Framework is a light weight container which provides DI thro; IOC
+Spring Framework --> like Service Providers
+
+Spring Framework has many modules:
+1) Core Module --> provides DI support and life cycle management of beans
+2) WEb module
+3) AOP module
+4) EAI module
+...
+
+Bean --> Java 1.2 version --> Any reusable software component
+
+Spring bean --> any object which is managed by Spring Container
+
+==========
+
+```
+public interface EmployeeDao {
+	addEmployee();
+}
+
+public class EmployeeDaoJdbcImpl implements EmployeeDao {
+	addEmployee() {..}
+}
+
+
+public class EmployeeDaoMongoImpl implements EmployeeDao {
+	addEmployee() {..}
+}
+
+public class AppService {
+	EmployeeDao empDao ; //dependency --> No tight coupling
+
+	public void setDao(EmployeeDao dao) {
+		this.empDao = dao;
+	}
+
+	public void insert(){
+		this.empDao.addEmployee(){..}
+	}
+}
+```
+
+xml as metadata
+beans.xml
+<beans>
+	<bean id="mongo" class="pkg.EmployeeDaoMongoImpl" />
+	<bean id="jdbc" class="pkg.EmployeeDaoJdbcImpl" />
+
+	<bean id="service" class="pkg.AppService">
+		<property name="dao" ref="jdbc" />
+	</bean>
+</beans>
+
+```
+
+public class AppService {
+	EmployeeDao empDao ; //dependency --> No tight coupling
+
+	public AppService(EmployeeDao dao) {
+		this.empDao = dao;
+	}
+
+	public void insert(){
+		this.empDao.addEmployee(){..}
+	}
+}
+
+```
+<beans>
+	<bean id="mongo" class="pkg.EmployeeDaoMongoImpl" />
+	<bean id="jdbc" class="pkg.EmployeeDaoJdbcImpl" />
+
+	<bean id="service" class="pkg.AppService">
+		<constructor arg="0" ref="jdbc" />
+	</bean>
+</beans>
+
+ApplicationContext ctx = new ClassPathApplicationContext("beans.xml");
+
+ApplicationContext --> interface to the Spring Container
+BeanFactory is other interface
+
+// get bean from Container
+ctx.getBean("service");
+ctx.getBean("jdbc");
+
+======================================================
+
+Annotation as metadata 
+
+DI Framework: Spring, Gooogle Guice, Play, ...
+
+Spring Frameworks instantiates classes which contain one of these annotations:
+1) @Component
+2) @Repository
+3) @Service
+4) @Configuration
+5) @Controller
+6) @RestController
+7) @ControllerAdvice
+
+Wiring is done using:
+1) @Autowired
+2) @Inject
+3) use constructor
+```
+public interface EmployeeDao {
+	addEmployee();
+}
+
+package com.adobe.prj.dao;
+
+@Repository
+public class EmployeeDaoJdbcImpl implements EmployeeDao {
+	addEmployee() {..}
+}
+
+@Repository
+public class EmployeeDaoMongoImpl implements EmployeeDao {
+	addEmployee() {..}
+}
+
+
+package com.adobe.prj.service;
+
+@Service
+public class AppService {
+	@Autowired
+	EmployeeDao empDao ; 
+
+	public void insert(){
+		this.empDao.addEmployee(){..}
+	}
+}
+
+ApplicationContext ctx = new AnnotationConfigApplicationContext();
+ctx.scan("com.adobe.prj"); // scan package and sub-packages
+ctx.refresh();
+
+ctx.getBean("...");
+
+
+```
+
+@Repository(name="jdbc")
+public class EmployeeDaoJdbcImpl implements EmployeeDao {
+
+
+Spring uses "JavaAssist" / "ByteBuddy" for byte code instrumentation
+and uses "CGLib" for creating "proxies"
+
+@Autowired is a setter injection based on "type"
+
+employeeDaoMongoImpl
+
+@Repository advantage
+```
+https://github.com/spring-projects/spring-framework/blob/main/spring-jdbc/src/main/resources/org/springframework/jdbc/support/sql-error-codes.xml
+
+public class EmployeeDaoJdbcImpl implements EmployeeDao {
+
+	addEmployee(Employee e) {
+		try {
+
+		} catch(SQLException ex) {
+			if(ex.getErrorCode() === 1521) {
+
+			} else if(ex.getErrorCode() == 90001) {
+
+			}
+		}
+	}
+}
+
+```
+
+Spring Boot Framework on top of Spring Framework
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+  </dependency>
+
+Spring Boot 3.x is built on top of Spring Framework 6.x
+
+Advantages of Spring Boot:
+1) highly opinated framework
+2) lots of configuration comes out of the box
+Example:
+1) If we decide to use Web application, Spring boot provides Tomcat as Embedded Servlet Container
+2) if we decide to use database, Database connection pool is done out of box
+3) If we are building RESTful web services it provides Jackson library configures to convert Java <--> JSON
+
+```
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+}
+
+SpringApplication.run ==> similar to new AnnotationConfigApplicationContext()
+
+@SpringBootApplication has 3 parts:
+1) @ComponentScan
+2) @EnableAutoConfiguration ==> required built-in beans based on type of application [beans for spring "jar"]
+3) @Configuration
+```
