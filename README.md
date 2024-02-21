@@ -760,22 +760,27 @@ employeeDaoDbImpl   (EmployeeDaoDbImpl.java)
 employeeDaoMongoImpl   (EmployeeDaoMongoImpl.java)
 
 Solution 1: @Primary
+```
 @Primary
 @Repository
 public class EmployeeDaoMongoImpl implements  EmployeeDao{
 
 @Repository
 public class EmployeeDaoDbImpl implements  EmployeeDao{
+```
 
 Solution 2: @Qualifier
+```
 remove @Primary
 
 and add
  @Autowired
  @Qualifier("employeeDaoMongoImpl")
  private EmployeeDao employeeDao; // autowire by type
+```
 
 Solution 3: @Profile
+```
 @Repository
 @Profile("dev")
 public class EmployeeDaoMongoImpl implements  EmployeeDao{
@@ -792,9 +797,10 @@ OR
 program arguments:
 java --spring.profiles.active=dev pck.DemoApplication
 
-
+```
 
 Solution 4: Custom properties
+```
 application.properties
 dao=JDBC
 
@@ -803,11 +809,25 @@ public class EmployeeDaoMongoImpl implements  EmployeeDao{
 
 @ConditionalOnProperty(name="dao", havingValue = "JDBC")
 public class EmployeeDaoDbImpl implements  EmployeeDao{
-
+```
 
 Solution 5:
+```
 @ConditionalOnMissingBean(EmployeeDaoMongoImpl.class)
 public class EmployeeDaoDbImpl implements  EmployeeDao{
-
+```
 ============
 
+```
+spring.datasource.url=jdbc:mysql://localhost:3306/RESTFUL_SPRING?createDatabaseIfNotExist=true
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=Welcome123
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+```
+
+Day 3
