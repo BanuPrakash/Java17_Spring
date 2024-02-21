@@ -818,16 +818,251 @@ public class EmployeeDaoDbImpl implements  EmployeeDao{
 ```
 ============
 
+Day 3
+
+Recap: 
+* Record
+* CDS and Application CDS
+* Garbage Collection
+* Spring Framework and Spring Boot
+Metadata --> XML / Annotation
+BeanFactory and ApplicationContext interfaces to access Spring Container
+new ClassPathXmlApplicationContext()
+new FilePathXmlApplicationContext()
+new AnnotationConfigApplicationContext()
+SpringApplication.run()
+
+ApplicationContext --> prefer this if your application is using multiple contexts [ EAI ]
+a) need interaction between SpringContainer and ServletContainer/ServletContext 
+b) need interaction between SpringContainer with PersistenceContext [ RDBMS ]
+
+BeanFactory --> use it only for small applications where DI and lifecycle management of a bean is required.
+
+@Autowired --> wires based on type
+
+@Primary, @Qualifier, @Profile, @ConditionalOnProperty, @ConditionalOnMissingBean, @ConditionOnBean
+
+==================
+Scope of bean: By default a bean is singleton
+@Scope
+1) singleton [default]
+2) prototype
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/RESTFUL_SPRING?createDatabaseIfNotExist=true
-spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-spring.datasource.username=root
-spring.datasource.password=Welcome123
+@Service
+@Scope("prototype")
+public class SampleService {
+
+}
+
+
+@Service
+public class AService {
+	@Autowired
+	SampleService s;
+}
+
+@Service
+public class BService {
+	@Autowired
+	SampleService s;
+}
+
+ctx.getBean("sampleService"); // get different bean instance
+
+```
+3) request @Scope("request") --> is available only in WebContext
+
+@Service
+@RequestScope // prefer
+public class SampleService {
+
+}
+
+request.setAttribute("sampleService", new SampleService());
+
+4) session 
+
+@Service
+@SessionScope // prefer
+public class CartService {
+
+}
+
+these beans are attached to HttpSession, and is available for conversational state of a client
+on Session Creation bean is attached
+session.setAttribute("cartService", new CartService());
+
+session.invalidate(); // bean is destroyed
+
+5) application 
+similar to Singleton
+
+==========================================
+
+Factory method --> @Bean
+
+1) 3rd party classes as beans
+2) Spring uses it's own way of intializing object
+
+<dependency>
+	<groupId>com.mchange</groupId>
+	<artifactId>c3p0<artificatId>
+	<version>0.9.5.5</version>
+</dependency>
+
+provides ComboPooledDataSource
+
+```
+@Service
+public class AppService {
+	@Autowired
+	DataSource ds; 
+}
+```
+Solution:
+
+```
+@Configuration
+public class AppConfig {
+	// factory method
+	@Bean
+	public DataSource dataSource() {
+		ComboPooledDataSource cpds = new ComboPooledDataSource();
+		cpds.setDriverClass( "org.postgresql.Driver" ); //loads the jdbc driver            
+		cpds.setJdbcUrl( "jdbc:postgresql://localhost/testdb" );
+		cpds.setUser("swaldman");                                  
+		cpds.setPassword("test-password");                                  
+	
+		// the settings below are optional -- c3p0 can work with defaults
+		cpds.setMinPoolSize(5);                                     
+		cpds.setAcquireIncrement(5);
+		cpds.setMaxPoolSize(20);
+
+		return cpds; // returned object is managed by spring container
+	}
+
+	@Bean
+	public LocalContainerEntityManagerFactory emf(DataSource ds) {
+		LocalContainerEntityManagerFactory emf = new LocalContainerEntityManagerFactory();
+		emf.setDatSource(ds);
+		emf.setJpaVendor(new HibernateJpaVendor());
+		emf.setPackagesToScan("com.adobe.prj.entity");
+		...
+		return emf;
+	}
+}
+
+@Service
+public class AppService {
+	@PersistenceContext
+	EntityManager em;
+
+	 public void addProduct(Product product) throws PersistenceException {
+			em.persist(product);
+	 }
+}
+```
+
+Building RESTful WS with Spring Data JPA
+
+JPA --> Java Persistence API is a specification to use ORM (Object Relational Mapping)
+
+Entity class <---> Relational database table
+
+@Entity
+@Table(name="books")
+public class Book {
+	@Id
+	private String isbn; // column is isbn
+
+	private String title; // column title
+
+	@Column(name="amount")
+	private double price; // column amount
+
+	private int quantity;
+}
+
+ORM frameworks are going to generate CRUD code
+
+ORM Frameworks:
+1) Hibernate
+2) TopLink
+3) KODO
+4) JDO
+5) ...
+
+
+```
+JDBC Code:
+
+    @Override
+    public void addProduct(Product product) throws PersistenceException {
+        String SQL = "INSERT INTO products(id, name, price, quantity) VALUES(0, ? ,? ,?)";
+        Connection con = null;
+        try {
+            con = DBUtil.getConnection();
+            PreparedStatement ps = con.prepareStatement(SQL);
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setInt(3, product.getQuantity());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+           // log
+            throw  new PersistenceException("unable to add product", e);
+        } finally {
+            DBUtil.closeConnection(con);
+        }
+    }
+
+JPA/ ORM Code:
+   @Override
+    public void addProduct(Product product) throws PersistenceException {
+		session.persist(product); // HIBERNATE code
+		OR
+		entityManager.save(product); // JPA code
+	}
+
+```
+
+Spring Boot by default uses Spring Data JPA
+Spring Data JPA is opiniated:
+1) provides HikariCP data connection pool
+2) uses Hiberante as JPA Vendor
+3) provides interfaces which generates code for default CRUD operation
+
+JpaRepository<T, ID> 
+
+public interface BookDao extends JpaRepository<Book, String> {
+
+}
+<S extends T> S save(S entity)
+List<T> findAll()
+
+bookDao.findAll();
+bookDao.save(book);
+Optional<T> findById(ID id)
+
+=========================================================
+Orderapp:
+Spring boot Application with MySQLDriver and Spring Data JPA dependencies
+
+https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+
+1) spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+bookDao.save(book); ==> has to generate SQL to match MySQL
+
+2) 
+spring.jpa.hibernate.ddl-auto=create
+
+create table and drop table on application exit
 
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-```
+--> use table if it exists
+--> create table if not exists for entity
+--> alter table if required [ adding columns, change length ]
 
-Day 3
+spring.jpa.hibernate.ddl-auto=verify
+--> use existing table if it matches else throw exception
+
