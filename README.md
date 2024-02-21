@@ -1036,7 +1036,8 @@ JpaRepository<T, ID>
 public interface BookDao extends JpaRepository<Book, String> {
 
 }
- S save(S entity)
+
+S save(S entity)
 List<T> findAll()
 
 bookDao.findAll();
@@ -1044,7 +1045,8 @@ bookDao.save(book);
 Optional<T> findById(ID id)
 
 =========================================================
-Orderapp:
+Orderapp: product, customer, order, linetitem, ....
+
 Spring boot Application with MySQLDriver and Spring Data JPA dependencies
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
@@ -1066,5 +1068,59 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.hibernate.ddl-auto=verify
 --> use existing table if it matches else throw exception
 
-Resume @ 11:30
 
+=====
+
+By default Last Commit wins --> Danger
+
+We need to make first commit win --> 
+    @Version
+    private int ver;
+
+```
+ id | name      | price | qty  | ver
++----+-----------+-------+------+
+|  1 | iPhone 14 | 89000 |  100 | 0
+
+Concurrent access by 2 clients without version
+
+Client 1:
+buys 5 iPhone 14
+
+commits first
+|  1 | iPhone 14 | 89000 |  95
+
+client 2:
+buys 1 iPhone 14
+
+commits second
+|  1 | iPhone 14 | 89000 |  99
+
+------
+
+Concurrent access by 2 clients with version
+
+First commit wins
+
+Client 1:
+buys 5 iPhone 14
+reads record
+ id | name      | price | qty  | ver
++----+-----------+-------+------+
+|  1 | iPhone 14 | 89000 |  100 | 0
+
+
+Update SQL will be
+update products set qty = 95, ver = ver + 1 where id = 1 and ver = 0 
+ 
+client 2:
+buys 1 iPhone 14
+reads record
+ id | name      | price | qty  | ver
++----+-----------+-------+------+
+|  1 | iPhone 14 | 89000 |  100 | 0
+
+Update SQL will be
+update products set qty = 99, ver = ver + 1 where id = 1 and ver = 0 
+
+```
