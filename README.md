@@ -1036,7 +1036,7 @@ JpaRepository<T, ID>
 public interface BookDao extends JpaRepository<Book, String> {
 
 }
-<S extends T> S save(S entity)
+ S save(S entity)
 List<T> findAll()
 
 bookDao.findAll();
@@ -1065,4 +1065,6 @@ spring.jpa.hibernate.ddl-auto=update
 
 spring.jpa.hibernate.ddl-auto=verify
 --> use existing table if it matches else throw exception
+
+Resume @ 11:30
 
