@@ -2,6 +2,7 @@ package com.adobe.orderapp.service;
 
 import com.adobe.orderapp.dao.ProductDao;
 import com.adobe.orderapp.entity.Product;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,15 @@ public class OrderService {
 
     public List<Product> getProducts() {
         return productDao.findAll();
+    }
+
+    public List<Product> getProductsByRange(double low, double high) {
+        return productDao.getProductsByRange(low, high);
+    }
+
+    @Transactional
+    public Product modifyProduct( int id, double price) {
+        productDao.updateProduct(id, price);
+        return getProductById(id);
     }
 }

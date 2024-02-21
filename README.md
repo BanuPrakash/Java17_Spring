@@ -1124,3 +1124,57 @@ Update SQL will be
 update products set qty = 99, ver = ver + 1 where id = 1 and ver = 0 
 
 ```
+
+ @Query can accept SQL or JP-QL [default]
+
+ from Object
+
+ ResultSet executeQuery("SELECT")
+ int executeUpdate("INSERT / DELETE / UPDATE");
+
+====
+For all default CUD operations of JpaRepository ==> Auto Commit is set to true
+
+Programmatic Transaction:
+con.setAutoCommit(true); // by default
+
+```
+JDBC: 
+con.setAutoCommit(false);
+ try {
+ perform CRUD
+ //..
+ con.commit();
+ } catch(SQLException ex) {
+	con.rollback();
+ }
+
+ Hibernate:
+ Transaction tx = session.beginTransaction();
+ try {
+	...
+	CRUD
+	tx.commit();
+ } catch(HibernateExceptino ex) {
+	tx.rollback();
+ }
+```
+
+Declarative Transaction and it is Distributed Tx:
+@Transactional 
+void method() {
+	// code
+}
+
+If no exception is thrown from method() ==> @Transactional --> commit
+if exception is throws @Transactional will trigger a rollback
+
+=====
+
+Association between tables
+Building RESTful WS
+Exception handling
+Validation
+
+
+

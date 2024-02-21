@@ -16,9 +16,13 @@ public class ProductClient implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
       //  addProduct();
-        printProducts();
+//        printProducts();
+        modify();
     }
 
+    public void modify() {
+        service.modifyProduct(2, 3900.50);
+    }
     public void addProduct() {
         service.addProduct(Product.builder().
                  name("iPhone 14")
