@@ -1285,3 +1285,92 @@ mysql> select * from customers;
 
 ```
 
+Web dependency:
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Web Module by default adds:
+1) tomcat as Servlet Container [ Netty / Jetty / ...]
+2) Provides DispatcherServlet as FrontController
+3) provides Jackson library for Java <---> JSON
+
+```
+For Traditional Web application ==> Server Side Rendering
+@Controller
+public class ProductController {
+	@RequestMapping(path="/products", method=GET)
+	public ModelAndView getProducts() {
+		ModelAndView mav = new ModelAndView();
+		mav.setView("print.jsp");
+		mav.addAttribute("products", service.getProducts());
+	}
+}
+
+```
+RESTful WS
+```
+@RestController
+@RequestMapping("api/products")
+public class ProductController {
+	@GetMapping()
+	public List<Product> getProducts() {
+		return service.getProducts();
+	}
+}
+```
+
+Building RESTful WS
+
+2000 Roy Fielding
+
+REpresetnational State Transfer
+* Resource --> information that we can name can be resource --> reside on server
+
+* State of resource --> resource representation
+* Resource representation consist of:
+1) data
+2) metadata describing the data
+3) hypermedia links ==> Level 3 RESTful WS
+	Order data can have links to track order, cancel order, payment for order,. ...
+	HATEOAS
+	Hypermedia As The Extension of Application State
+
+====
+
+guiding principles of REST:
+1) Uniform interface
+2) client-server
+3) Stateless
+4) Caching
+5) Layered System
+
+==============
+
+Identify Resource using URI
+Perform actions using HTTP methods
+CRUD
+CREATE --> POST
+READ --> GET
+UPDATE --> PUT / PATCH
+DELETE --> DELETE
+
+===========
+
+HttpSession session = request.getSession(); // meant for coversiational state of client
+JSESSIONID 
+
+Best Practices:
+1) uses nouns to represent resources
+2) collection is a resource which is server-manged directory of resources
+3) store is resource client-managed resource repository
+	http://spotify.com/song-management/users/banu@gmail.com/playlists
+4) Controller
+	are like executable functions
+	http://spotify.com/song-management/users/banu@gmail.com/playlists/1/play
+
+----
+
+Install POSTMAN for REST client
+
