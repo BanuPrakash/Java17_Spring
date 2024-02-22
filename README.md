@@ -1374,3 +1374,21 @@ Best Practices:
 
 Install POSTMAN for REST client
 
+Prefer @PatchMapping for partial update instead of @PutMapping
+<!-- https://mvnrepository.com/artifact/com.github.java-json-tools/json-patch -->
+<dependency>
+    <groupId>com.github.java-json-tools</groupId>
+    <artifactId>json-patch</artifactId>
+    <version>1.13</version>
+</dependency>
+
+```
+{
+	"title":"Team Lead",
+	"personal":
+		{"firstName":"Raj","lastName":"Kumar","email":"raj@adobe.com"},
+	"skills":["Spring Boot","AWS","React"]
+}
+
+```
+
