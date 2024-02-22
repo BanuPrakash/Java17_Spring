@@ -1177,4 +1177,71 @@ Exception handling
 Validation
 
 
+=============
 
+
+Day 4
+
+Case 1: without cascade
+```
+	@OneToMany
+	@JoinColumn(name="order_fk")
+	private List<Item> items = new ArrayList<>();
+
+Order has 4 items.
+CRUD operations:
+
+orderDao.save(order);
+itemDao.save(item1);
+itemDao.save(item2);
+itemDao.save(item3);
+itemDao.save(item4);
+```
+---
+```
+itemDao.delete(item1);
+itemDao.delete(item2);
+itemDao.delete(item3);
+itemDao.delete(item4);
+orderDao.delete(order);
+
+Case 2: with Cascade:
+@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="order_fk")
+	private List<Item> items = new ArrayList<>();
+
+
+Order has 4 items.
+CRUD operations:
+orderDao.save(order); // takes care of saving all items of the order
+orderDao.delete(order); // takes care of removing all entries of item from "items" table
+
+no need for ItemDao JpaRepository
+```
+===
+
+DEfault Fetch type for OneToMany is LAZY and for ManyToOne is EAGER
+Case 1:
+```
+@OneToMany(cascade = CascadeType.ALL)
+@JoinColumn(name="order_fk")
+private List<Item> items = new ArrayList<>();
+
+orderDao.findAll();
+select * from orders;
+items are not fetched
+
+for(Order o : orders) {
+	List<Item> items = itemDao.getItemOfOrder(o.getId())
+}
+```
+Case 2:
+```
+@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="order_fk")
+	private List<Item> items = new ArrayList<>();
+
+orderDao.findAll();
+select * from orders and items;
+```
+=====

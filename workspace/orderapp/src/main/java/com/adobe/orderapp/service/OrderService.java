@@ -1,6 +1,8 @@
 package com.adobe.orderapp.service;
 
+import com.adobe.orderapp.dao.CustomerDao;
 import com.adobe.orderapp.dao.ProductDao;
+import com.adobe.orderapp.entity.Customer;
 import com.adobe.orderapp.entity.Product;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class OrderService {
     private final ProductDao productDao; // wire instance of ProductDao class created by Data JPA
+    private final CustomerDao customerDao;
+
+    public void saveCustomer(Customer c) {
+        customerDao.save(c);
+    }
 
     public Product addProduct(Product product) {
        return productDao.save(product); //INSERT SQL
