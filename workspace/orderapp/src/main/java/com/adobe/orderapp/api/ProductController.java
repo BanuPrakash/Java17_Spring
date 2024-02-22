@@ -57,7 +57,7 @@ public class ProductController {
 
            @ResponseBody  --> Optional for return type
      */
-    @PostMapping
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED) //201
     public Product addProduct(@RequestBody Product p) {
         return service.addProduct(p);
