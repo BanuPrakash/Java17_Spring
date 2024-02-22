@@ -18,6 +18,7 @@ public class Customer {
     private String firstName;
     @Column(name ="LNAME", length = 100)
     private String lastName;
+
 }
 
 // CustomerDAO, ...JP-QL and SQL

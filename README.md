@@ -1199,11 +1199,14 @@ itemDao.save(item4);
 ```
 ---
 ```
+@Transactional
+method() {
 itemDao.delete(item1);
 itemDao.delete(item2);
 itemDao.delete(item3);
 itemDao.delete(item4);
 orderDao.delete(order);
+}
 
 Case 2: with Cascade:
 @OneToMany(cascade = CascadeType.ALL)
@@ -1223,6 +1226,7 @@ no need for ItemDao JpaRepository
 DEfault Fetch type for OneToMany is LAZY and for ManyToOne is EAGER
 Case 1:
 ```
+n + 1 problem
 @OneToMany(cascade = CascadeType.ALL)
 @JoinColumn(name="order_fk")
 private List<Item> items = new ArrayList<>();
@@ -1232,7 +1236,7 @@ select * from orders;
 items are not fetched
 
 for(Order o : orders) {
-	List<Item> items = itemDao.getItemOfOrder(o.getId())
+	List<Item> items = itemDao.getItemOfOrder(o.getId()); // select * from items where order_id = ?
 }
 ```
 Case 2:
@@ -1245,3 +1249,38 @@ orderDao.findAll();
 select * from orders and items;
 ```
 =====
+
+
+class Product {
+	id,name, price
+}
+
+@SuperBuilder
+class Tv extends Product {
+	screenType,
+	screenSize
+}
+
+Tv.builder.id(2).name("A").price(3333).screenType("LED").
+
+Given a Customer i need to get all his orders
+
+https://martinfowler.com/bliki/DomainDrivenDesign.html
+
+```
+
+mysql> insert into customers values('raj@adobe.com', 'Raj', 'Kumar');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into customers values('swetha@adobe.com', 'Swetha', 'Kumari');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select * from customers;
++------------------+--------+--------+
+| email            | fname  | lname  |
++------------------+--------+--------+
+| raj@adobe.com    | Raj    | Kumar  |
+| swetha@adobe.com | Swetha | Kumari |
++------------------+--------+--------+
+
+```
