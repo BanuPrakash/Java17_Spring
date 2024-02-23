@@ -1394,5 +1394,88 @@ Prefer @PatchMapping for partial update instead of @PutMapping
 
 Day 5
 
+Recap:
+```
+RESTful WS
+* @RestController instead of @Controller
+	@Controller
+	// returned value is assumed as the view name
+	String getData() {
+		return "print.jsp"; // render print.jsp
+	}
+
+	@ResponseBody String getData() {
+		return "Hello World"; // render print.jsp
+	}
+
+	@RestController
+	// returns a String
+	String getData() {
+
+	}
+* @RequestMapping --> Collection resource mapping
+* @GetMapping(), @PostMapping(), @PutMapping(), @DeleteMapping() and @PatchMapping() ==> json-patch
+* @ResponseBody and @RequestBody, @PathVaraible, @RequestParam
+
+// TODO --> MongoDB record concurrency issues --> only Last Commit wins --> Solution both should work for same record
+
+```
+
+* Aspect Oriented Programming - AOP
+* Validation
+* Exception Handling
+* RestTemplate, WebClient
 
 
+
+AOP:
+A coding approach that helps developers write more organized code. 
+AOP separates common tasks, like logging or error handling, from the main program logic.
+Terminology
+1) Aspect --> A Concern like logging, security, error handling, profile which is not a part of main logic but can be used along with main logic
+
+Aspects leads to code tangling and code scattering
+
+LogAspect.
+TransactionAspect
+SecurityAspect
+
+and weave them whereever required
+
+2) JoinPoint --> a place where aspect can be weaved
+ Spring  allows weaving of aspect to a method or exception
+
+3) PointCut --> selected JoinPoint [ expression --> like RegEx]
+
+4) Advice --> 
+Before, After, Around, AfterReturning, AfterThrowing
+
+```
+public void transferFunds(Account fa, Account ta, double amt) {
+	log.debug("Transfering funds ....");
+	if(getRole().equals("CUSTOMER")) {
+		try {
+			// get balance from "fa" account
+			Transaction tx = session.beginTransaction();
+				// deposit
+				log.debug("deposit...");
+				// withdraw
+				// ...
+
+			tx.commit();
+		} catch(Exception ex) {
+			tx.rollback();
+		}
+
+		log.debug("transaction success...");
+	}
+}
+```
+
+Spring uses AspectJ library for AOP
+
+if(condtion) ==> Aspect to execute --> Not possible in Spring AOP
+@Before("execution(* com.adobe.orderapp.service.*.*(..))")
+    public void logBefore(JoinPoint jp) {
+    
+    }
