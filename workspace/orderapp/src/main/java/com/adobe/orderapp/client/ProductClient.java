@@ -1,6 +1,7 @@
 package com.adobe.orderapp.client;
 
 import com.adobe.orderapp.entity.Product;
+import com.adobe.orderapp.service.EntityNotFoundException;
 import com.adobe.orderapp.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -20,7 +21,7 @@ public class ProductClient implements CommandLineRunner {
        // modify();
     }
 
-    public void modify() {
+    public void modify() throws EntityNotFoundException {
         service.modifyProduct(2, 3900.50);
     }
     public void addProduct() {

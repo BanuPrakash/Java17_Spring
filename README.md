@@ -1472,10 +1472,63 @@ public void transferFunds(Account fa, Account ta, double amt) {
 }
 ```
 
-Spring uses AspectJ library for AOP
+https://docs.spring.io/spring-framework/docs/2.0.x/reference/aop.html
 
-if(condtion) ==> Aspect to execute --> Not possible in Spring AOP
-@Before("execution(* com.adobe.orderapp.service.*.*(..))")
-    public void logBefore(JoinPoint jp) {
-    
+https://docs.oracle.com/javaee%2F7%2Fapi%2F%2F/javax/validation/constraints/package-summary.html
+
+```
+<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+  
+public Product addProduct(@RequestBody @Valid Product p) {
+ 
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @Min(value = 10, message = "Price ${validatedValue} should be more than {value}")
+    private double price;
+
+    @Column(name="qty")
+    @Min(value = 1, message = "Quantity ${validatedValue} should be more than {value}")
+    private int quantity;
+
+
+```
+
+Resolved [org.springframework.web.bind.MethodArgumentNotValidException: 
+
+[Field error in object 'product' on field 'quantity':  default message [Quantity 0 should be more than 1]] [
+	
+Field error in object 'product' on field 'price':  default message [Price -31.0 should be more than 10]] 
+
+[Field error in object 'product' on field 'name': default message [Name is required]] ]
+
+```
+Service
+ public Product getProductById(int id) throws  EntityNotFoundException{
+        Optional<Product> optional =  productDao.findById(id);
+        if(optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new EntityNotFoundException("Product with id " + id + " doesn't exist!!!"); // need to throw Exception
+        }
     }
+RestController:
+  @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable("pid") int id, @RequestBody Product p) throws EntityNotFoundException {
+        service.modifyProduct(id, p.getPrice());
+        return  service.getProductById(id);
+    }
+
+	    @GetMapping("/{pid}")
+    public Product getProduct(@PathVariable("pid") int id) throws EntityNotFoundException {
+        return service.getProductById(id);
+    }
+
+```
+
+Global Exception Handling Using @ControllerAdvice Classes
+A controller advice allows you to use exactly the same exception handling techniques but apply them across the whole application, not just to an individual controller. You can think of them as an annotation driven interceptor.
+

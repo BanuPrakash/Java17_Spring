@@ -1,7 +1,9 @@
 package com.adobe.orderapp.api;
 
 import com.adobe.orderapp.entity.Product;
+import com.adobe.orderapp.service.EntityNotFoundException;
 import com.adobe.orderapp.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class ProductController {
     // GET http://localhost:8080/api/products/2
     // "2" is path parameter "2" is converted to 2 by HttpMessageConvertor --> IntegerHttpMessageConverter
     @GetMapping("/{pid}")
-    public Product getProduct(@PathVariable("pid") int id) {
+    public Product getProduct(@PathVariable("pid") int id) throws EntityNotFoundException {
         return service.getProductById(id);
     }
 
@@ -59,12 +61,12 @@ public class ProductController {
      */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED) //201
-    public Product addProduct(@RequestBody Product p) {
+    public Product addProduct(@RequestBody @Valid Product p) {
         return service.addProduct(p);
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable("pid") int id, @RequestBody Product p) {
+    public Product updateProduct(@PathVariable("pid") int id, @RequestBody Product p) throws EntityNotFoundException {
         service.modifyProduct(id, p.getPrice());
         return  service.getProductById(id);
     }
