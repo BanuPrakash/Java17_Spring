@@ -1538,7 +1538,22 @@ A controller advice allows you to use exactly the same exception handling techni
 RESTful WS Clients --> Consume RESTApi
 
 * RestTemplate
+* WebClient along with HttpExchange
+
+Asynchronous Controller operations
+
+@EnableAsync ==> enable to use custom Thread Pool
+
+For Webclient:
+```
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+```
 
 
+@HttpExchange 0s a declarative HTTP interface to reduce boilerplate code.
+generates a proxy implementation of interfaces.
 
 
