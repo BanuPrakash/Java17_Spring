@@ -1532,3 +1532,13 @@ RestController:
 Global Exception Handling Using @ControllerAdvice Classes
 A controller advice allows you to use exactly the same exception handling techniques but apply them across the whole application, not just to an individual controller. You can think of them as an annotation driven interceptor.
 
+
+=======
+
+RESTful WS Clients --> Consume RESTApi
+
+* RestTemplate
+
+
+
+
