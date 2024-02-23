@@ -7,7 +7,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@EnableAsync
 public class OrderappApplication {
 
     public static void main(String[] args) {
