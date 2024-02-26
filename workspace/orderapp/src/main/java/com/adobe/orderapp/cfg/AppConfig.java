@@ -3,10 +3,14 @@ package com.adobe.orderapp.cfg;
 import com.adobe.orderapp.httpinterfaces.PostInterface;
 import com.adobe.orderapp.httpinterfaces.UserInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,7 +22,19 @@ import java.util.concurrent.Executors;
 
 @Configuration
 @EnableAsync
+@EnableScheduling
 public class AppConfig {
+
+    @Autowired
+    CacheManager cacheManager;
+    //    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0 0/30 * * * *")
+    public void clearCache() {
+        System.out.println("Cache Cleared!!!");
+        cacheManager.getCacheNames().forEach(cache -> {
+            cacheManager.getCache(cache).clear();
+        });
+    }
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();

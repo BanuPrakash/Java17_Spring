@@ -1631,3 +1631,23 @@ public class OrderappApplication {
 
 	https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions
 ```
+
+docker run --name -p 6379:6379 some-redis -d redis
+
+```
+Redis CacheManager
+<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+		
+application.properties
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+
+```
+If node is installed:
+npx redis-commander
+
+=========
+
