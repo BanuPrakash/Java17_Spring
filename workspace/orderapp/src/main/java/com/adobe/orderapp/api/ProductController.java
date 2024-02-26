@@ -5,7 +5,11 @@ import com.adobe.orderapp.service.EntityNotFoundException;
 import com.adobe.orderapp.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +49,25 @@ public class ProductController {
         return service.getProductById(id);
     }
 
+    @GetMapping("/etag/{pid}")
+    public ResponseEntity<Product> getProductETag(@PathVariable("pid") int id) throws EntityNotFoundException {
+        Product p = service.getProductById(id);
+        return ResponseEntity.ok().eTag(Long.toString(p.hashCode())).body(p);
+    }
+
+
+    @Cacheable(value="productCache", key="#id")
+    //@Cacheable(value = "productCache", key="#id", unless ="#result !=null")
+    @GetMapping("/cache/{pid}")
+    public Product getProductCache(@PathVariable("pid") int id) throws EntityNotFoundException {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return service.getProductById(id);
+    }
+
     /*
         HttpHeader
         Content-type:application/json
@@ -59,12 +82,14 @@ public class ProductController {
 
            @ResponseBody  --> Optional for return type
      */
+    @Cacheable(value = "productCache", key="#p.id", condition = "#p.price > 100")
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED) //201
     public Product addProduct(@RequestBody @Valid Product p) {
         return service.addProduct(p);
     }
 
+    @CachePut(value="productCache", key="#id")
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable("pid") int id, @RequestBody Product p) throws EntityNotFoundException {
         service.modifyProduct(id, p.getPrice());
@@ -72,8 +97,16 @@ public class ProductController {
     }
 
     // not supposed to be given for collection resource
+    @CacheEvict(value = "productCache", key="#id")
     @DeleteMapping("/{id}")
     public String deleteProduct(@PathVariable("pid") int id) {
         return  "Product delete API call";
+    }
+
+
+    // BAD CODE
+    @CacheEvict(value = "productCache", allEntries = true)
+    @GetMapping("/clear")
+    public void clearAllCache() {
     }
 }

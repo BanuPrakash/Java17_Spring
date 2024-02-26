@@ -1599,3 +1599,35 @@ WebMvcTest
 --> HandlerMapping
 --> MockMvc to perform HTTP Request
 
+======
+
+Caching
+* Client Side
+* Server Side
+* Middle tier
+
+ Client Side
+  using HttpHeaders
+ a) cache-control
+ Cache-control: max-age=180
+b) ETag
+The ETag (or entity tag) HTTP response header is an identifier for a specific version of a resource. It lets caches be more efficient and save bandwidth, as a web server does not need to resend a full response if the content was not changed.
+304 Not Modified
+
+api/products/3
+
+=========
+ Server Side Caching
+ ```
+   <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+
+@EnableCaching
+public class OrderappApplication {
+
+	By Default it uses ConcurrentMapCache and CacheManager 
+
+	https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions
+```
