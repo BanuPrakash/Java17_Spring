@@ -1640,7 +1640,7 @@ Redis CacheManager
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-		
+
 application.properties
 spring.data.redis.host=localhost
 spring.data.redis.port=6379
@@ -1651,3 +1651,28 @@ npx redis-commander
 
 =========
 
+HATEOAS
+Hypertext As The Engine Of Application State
+
+OrderApplication
+	Place Order
+		Links should be there for payment, cancel
+	Payment Done
+		Link should be there to track Order
+
+Spring  provides WebMvcLinkBuilder
+--> Builder to easily build link instances 
+
+Product ==> Entity
+Product with Links ==> EntityModel<Product>
+
+RepresentationModel -==> EntityModel or CollectionModel
+
+List<Product> with Links ==> CollectionModel<List<Product>>
+
+```
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+ </dependency>
+```

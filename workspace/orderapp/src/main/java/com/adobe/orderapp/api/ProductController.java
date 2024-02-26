@@ -8,9 +8,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
 
 import java.util.List;
 
@@ -91,7 +96,7 @@ public class ProductController {
 
     @CachePut(value="productCache", key="#id")
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable("pid") int id, @RequestBody Product p) throws EntityNotFoundException {
+    public Product updateProduct(@PathVariable("id") int id, @RequestBody Product p) throws EntityNotFoundException {
         service.modifyProduct(id, p.getPrice());
         return  service.getProductById(id);
     }
@@ -99,8 +104,8 @@ public class ProductController {
     // not supposed to be given for collection resource
     @CacheEvict(value = "productCache", key="#id")
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable("pid") int id) {
-        return  "Product delete API call";
+    public Product deleteProduct(@PathVariable("id") int id) {
+        return new Product();
     }
 
 
@@ -109,4 +114,21 @@ public class ProductController {
     @GetMapping("/clear")
     public void clearAllCache() {
     }
+
+
+    @GetMapping("/hateoas/{id}")
+    public ResponseEntity<EntityModel<Product>> getProductHateos(@PathVariable("id") int id) throws EntityNotFoundException{
+        Product p = service.getProductById(id);
+        EntityModel<Product> entityModel = EntityModel.of(p,
+
+                linkTo(methodOn(ProductController.class).getProductHateos(id))
+                        .withSelfRel()
+                        .andAffordance(afford(methodOn(ProductController.class).updateProduct(id,null)))
+                      .andAffordance(afford(methodOn(ProductController.class).deleteProduct(id)))
+                ,
+                linkTo(methodOn(ProductController.class).getProducts(0,0)).withRel("products")
+                );
+        return ResponseEntity.ok(entityModel);
+    }
+
 }
