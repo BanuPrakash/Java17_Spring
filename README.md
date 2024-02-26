@@ -1556,4 +1556,46 @@ For Webclient:
 @HttpExchange 0s a declarative HTTP interface to reduce boilerplate code.
 generates a proxy implementation of interfaces.
 
+=======
+
+1) HATEOS and Rest Client
+2) Unit testing Controllers
+3) Caching
+
+docker run -d --name=some-redis -p 6379:6379 redis
+4) Spring Security
+5) Micro Services
+
+========
+
+
+
+Day 6
+
+Unit Testing --> Testing by mocking dependencies
+
+Dependency flow:
+Controller/RestController --> Service --> Repository --> Database
+
+To test Service we need to mock Repository
+To test Controllers we need to mock Service tier code
+
+Integration Testing
+we can write test code using RestTemplate/WebClient make api call and do the assertion on result
+
+
+Unit Testing --> Junit / TestNG
+
+Spring boot provides : 
+* Junit
+* mockito --> Mocking [ alternate --> EasyMock, Jmock]
+* Hamcrest assertion library
+* JsonPath
+https://jsonpath.com/
+
+WebMvcTest
+@WebMvcTest(ProductController.class) --> Make sure Spring container is created just with MVC related Components unlike @SpringBootApplication
+--> a variant of DispatcherServlet --> DispatcherServletTest
+--> HandlerMapping
+--> MockMvc to perform HTTP Request
 
