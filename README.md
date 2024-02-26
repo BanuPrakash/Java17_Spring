@@ -1689,3 +1689,26 @@ http://localhost:8080/products/search/findByQuantity?number=95
 
 BasePathAwareController
 To override provided endpoints
+```
+@BasePathAwareController
+public class ProductController {
+    @Autowired
+    ProductDao productDao;
+
+    @RequestMapping(path = "products", method = RequestMethod.GET)
+    public @ResponseBody List<Product> getProducts() {
+        // productDao.findAll();
+        return Arrays.asList(new Product(33,"A", 44,110, 0),
+                new Product(881,"B", 6722,99, 0));
+    }
+}
+
+@BasePathAwareController // @RepositoryRestController should have been used
+public class HelloController {
+    @RequestMapping(path = "hello", method = RequestMethod.GET)
+    public @ResponseBody  String sayHello() {
+        System.out.println("Hello!!!");
+        return "Hello World!!!";
+    }
+}
+```
