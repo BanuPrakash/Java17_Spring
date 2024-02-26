@@ -1676,3 +1676,16 @@ List<Product> with Links ==> CollectionModel<List<Product>>
             <artifactId>spring-boot-starter-hateoas</artifactId>
  </dependency>
 ```
+
+Spring Data REST is part of the umbrella Spring Data project and makes it easy to build hypermedia-driven REST web services on top of Spring Data repositories.
+
+using "Spring Data REST" we don't need to write RestController and no need to use WebMvcLinkBuilder
+
+New Project
+* lombok, mysql, Rest Repositories, web, jpa dependcies
+
+http://localhost:8080/products/search/getProductsByRange?l=100&h=5000
+http://localhost:8080/products/search/findByQuantity?number=95
+
+BasePathAwareController
+To override provided endpoints
