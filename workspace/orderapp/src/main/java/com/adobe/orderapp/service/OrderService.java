@@ -7,10 +7,12 @@ import com.adobe.orderapp.entity.Customer;
 import com.adobe.orderapp.entity.Item;
 import com.adobe.orderapp.entity.Order;
 import com.adobe.orderapp.entity.Product;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class OrderService {
     private final ProductDao productDao; // wire instance of ProductDao class created by Data JPA
     private final CustomerDao customerDao;
     private final OrderDao orderDao;
-
+    private final RestTemplate template;
     /*
         total is computed
         orderDate --> System Date
@@ -58,6 +60,7 @@ public class OrderService {
         orderDao.save(order);//Cascade takes care of saving items
     }
 
+    @Observed(name="posts.list", contextualName = "posts.get-Posts")
     public List<Order> getOrders() {
         return orderDao.findAll();
     }
@@ -70,7 +73,9 @@ public class OrderService {
        return productDao.save(product); //INSERT SQL
     }
 
-    public Product getProductById(int id) throws  EntityNotFoundException{
+    @Observed(name="product.byId", contextualName = "products.get-Product")
+    public Product getProductById(int id) throws  EntityNotFoundException {
+        String response = template.getForObject("https://jsonplaceholder.typicode.com/users", String.class);
         Optional<Product> optional =  productDao.findById(id);
         if(optional.isPresent()) {
             return optional.get();

@@ -3,6 +3,7 @@ package com.adobe.orderapp.api;
 import com.adobe.orderapp.dto.Post;
 import com.adobe.orderapp.dto.User;
 import com.adobe.orderapp.service.PostService;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
     record PostDTO(String title, String user) {}
+
     @GetMapping()
     public List<PostDTO> getPosts() {
         CompletableFuture<List<Post>> posts = postService.getPosts(); // non-blocking

@@ -1712,3 +1712,99 @@ public class HelloController {
     }
 }
 ```
+Micrometer
+Reactive Spring
+Spring Security with JWT
+
+=============
+
+
+Recap: 
+Caching
+-> Client side Caching 
+a) Cache-Control HTTP header
+b) ETag
+	sends a number --> version of entity or  hashcode of entity [DTOs]
+	ETag: <<number>>
+
+	Subsequent resuests:
+	If-None-Match: <<number>>
+
+	SC 403 --> Not Modified
+
+--> Cache module
+	CacheManager and ConcurrentMapCache --> default implementations for Cache
+	@Cacheble
+	@CachePut
+	@CacheEvict
+
+	--> redis --> it's own CacheImplmentation which will be used instead of ConcurrentMapCache
+
+HATEOAS
+--> WebMvcLinkBuilder --> EntityModel or CollectionModel [ Entity + Links]
+--> linkTo
+--> addAffordance [ template --> METHOD of REQEST and specify the payload type]
+HAL_FORMS
+
+Spring Data REST --> uses Spring Data Repositiries [ SpringDataJPA or Spring Data Mongo] and builds RESTful Endpoints
+--> RespositoryRestConfigurer
+--> @BasePathAwareController ==> override existing Endpoints
+--> @RepostoryRestController --> new endpoints [ but @BasePathAwareController  worked ]
+--> can't use @RestController
+
+=========
+
+Day 7:
+
+Spring Boot Actuator is a module which provides production-ready features to monitor and manage Spring Boot Application.
+Provides ENDPoints and metrics for monitoerting health checks, auditing, ...
+
+ Controller --> DB 
+			--> Kafka
+			--> MongoDB
+
+```
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+ </dependency>
+ application.properites
+ management.endpoints.web.exposure.include=health,metrics,info,prometheus
+
+ http://localhost:8080/actuator
+ http://localhost:8080/actuator/health
+ http://localhost:8080/actuator/metrics
+
+http://localhost:8080/actuator/metrics/http.server.requests
+
+ab -n 200 -c 50 http://localhost:8080/api/products/
+Apache httpd Server has "ab" 
+
+https://prometheus.io/
+
+Prometheus is a time-series database which collects metrics from targets by scraping metrics HTTP endpoints. 
+Graph
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+http://localhost:8080/actuator/prometheus
+
+
+http_server_requests_seconds_count
+is the total number of http requests your application recievied
+
+
+http_server_requests_seconds_sum
+	--> duration of every request
+
+jvm_threads_live_threads
+
+ab -n 500 -c 50 http://localhost:8080/api/products/
+ab -n 500 -c 50 http://localhost:8080/api/products/4
+
+
+```
