@@ -1806,5 +1806,25 @@ jvm_threads_live_threads
 ab -n 500 -c 50 http://localhost:8080/api/products/
 ab -n 500 -c 50 http://localhost:8080/api/products/4
 
+Spring Boot Actuator comes with pre-defined health Indicators:
+1) DataSourceHealthIndicator
+2) MongoHealthIndicator
+3) RedisHealthIndicator
+$) CasandraHealthIndicator
 
 ```
+
+Reactive Programming
+--> concerned with data streams and propagation of change
+--> based on Observer Pattern instead of Iterator Pattern
+
+Spring Boot uses Netty / Reactor for Reactive programming
+Alternative:
+1) RxJava
+2) Vert.X
+
+https://projectreactor.io/docs/netty/1.1.15/reference/index.html
+
+Netty Server instead of Tomcat
+Netty Server is based on Event Driven Architecture
+
