@@ -1873,3 +1873,45 @@ Project with Lombok and reactive web
 spring-boot-starter-webflux instead of spring-boot-starter-web
 
 ```
+
+RDBMS:   mongo DB
+Database   --> database
+Table   --> Collection
+Column --> filed
+Row  ---> record
+
+Spring Data R2DBC
+
+=================
+
+
+Spring Security
+Authentication and Authorization
+
+```
+<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+```
+by adding above depenency:
+1) all resources by default are protected
+2) Generates one user with username -> "user" with "generated Password"
+3) provides login and logout pages
+
+Using generated security password: 12105aab-7ca9-4f59-af2d-0e7be831ee77
+
+http://localhost:8080/logout
+
+FilterChain
+
+/api/**
+
+
+SecurityContext
+
+JSESSIONID
+
+
+
