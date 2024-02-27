@@ -1816,7 +1816,7 @@ $) CasandraHealthIndicator
 
 Reactive Programming
 --> concerned with data streams and propagation of change
---> based on Observer Pattern instead of Iterator Pattern
+--> based on Observer Pattern [Push] instead of Iterator Pattern[Pull] {get(2)}
 
 Spring Boot uses Netty / Reactor for Reactive programming
 Alternative:
@@ -1828,3 +1828,48 @@ https://projectreactor.io/docs/netty/1.1.15/reference/index.html
 Netty Server instead of Tomcat
 Netty Server is based on Event Driven Architecture
 
+ReactiveMongoRepository --> reactive
+
+JpaRepository is non-reactive
+
+
+@Async, Future and CompletableFuture
+Thread based --> we have seperate Thread pool
+Blocking before you write to client
+.join()
+
+---
+Mono and Flux are pre-defined publishers
+Mono --> 0 to 1 record
+Flux -> o to n data
+
+Sample Code:
+```
+	Client makes a request, --> Inbound channel handler
+	Internally it uses different Thread pools 
+	once Data is available
+	use the Socket to publish "user"
+	Client gets Notifictaiton --> Subscriber [ user ]
+	Controller Code
+	Mono<User> getUserAndPosts(int userId) {
+		return userService.getUser(userId)
+			.zipWith(postService.getPosts(userId))
+			.map(tuple -> {
+				User user = tuple.getT1();
+				Post post = tuple.getT2();
+				user.setPosts(post);
+				return user;
+			})
+	}
+
+```
+Project with Lombok and reactive web
+```
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+ </dependency>
+
+spring-boot-starter-webflux instead of spring-boot-starter-web
+
+```
