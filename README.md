@@ -1977,3 +1977,5 @@ Files:
 3) UserService 
 4) DTOs SignUpRequest, SigninRequest and  JwtAuthenticationResponse
 5) Services: JwtService
+
+6) AuthenticationService.java and 
