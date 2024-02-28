@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "users_table")
 public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
     

@@ -1908,7 +1908,8 @@ http://localhost:8080/logout
 
 Day 8
 
-Security
+Security --> JdbcAuthentication
+
 application.properties
 
 spring.jpa.defer-datasource-initialization=true
@@ -1922,5 +1923,30 @@ https://docs.spring.io/spring-security/reference/servlet/appendix/database-schem
 https://bcrypt-generator.com/
 
 
+------
 
+JWT --> for Stateless RESTful / GraphQL 
+JSON Web Tokens are an open, industry standard RFC 7519 method for representing claims securely between two parties.
 
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9. [Headers]
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ. [payload]
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c [Signature]
+
+payload:
+{
+	sub: "banu@lucidatechnologies.com",
+	iat: 23232323344,
+	exp: 62232322211,
+	roles: ["ADMIN", "READ"]
+	iss: "http://secure.adobe.com"
+}
+
+SIGNATURE:
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+   mytopsecretkey121212121212
+) 
+
+```
