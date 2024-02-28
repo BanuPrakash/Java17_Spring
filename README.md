@@ -1978,4 +1978,10 @@ Files:
 4) DTOs SignUpRequest, SigninRequest and  JwtAuthenticationResponse
 5) Services: JwtService
 
-6) AuthenticationService.java and 
+6) AuthenticationService.java and  AuthenticationController.java
+
+7) JwtAuthenticationFilter.java
+Http Header
+Authorization: Bearer <<token>>
+
+8) SecurityConfiguration ==> Comment old SecurityConfig [JDBC one]
