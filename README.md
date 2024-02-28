@@ -1950,3 +1950,30 @@ HMACSHA256(
 ) 
 
 ```
+
+Dependencies:
+```
+<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+```
+
+
+Files:
+1) User and Role in "entity"
+2) UserDao
+3) UserService 
+4) DTOs SignUpRequest, SigninRequest and  JwtAuthenticationResponse
+5) Services: JwtService
