@@ -17,6 +17,6 @@ public class SignUpRequest {
     private String email;
     private String password;
     @Builder.Default
-    private Role role = Role.ROLE_USER;
+    private Role role = Role.ROLE_ADMIN;
 }
 

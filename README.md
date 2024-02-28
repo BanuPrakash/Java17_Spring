@@ -1985,3 +1985,5 @@ Http Header
 Authorization: Bearer <<token>>
 
 8) SecurityConfiguration ==> Comment old SecurityConfig [JDBC one]
+
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXJyeUBhZG9iZS5jb20iLCJpYXQiOjE3MDkwOTkyNTksImV4cCI6MTcwOTEwMDY5OSwicm9sZXMiOlsiUk9MRV9VU0VSIl19.VSar5khhkH2zO5DKDnMQ6QwrNaHsLQS-07hkS3UQ4-I
