@@ -1904,14 +1904,23 @@ Using generated security password: 12105aab-7ca9-4f59-af2d-0e7be831ee77
 
 http://localhost:8080/logout
 
-FilterChain
+=====
 
-/api/**
+Day 8
+
+Security
+application.properties
+
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.mode=always
+
+resources / schema.sql and data.sql
 
 
-SecurityContext
+https://docs.spring.io/spring-security/reference/servlet/appendix/database-schema.html
 
-JSESSIONID
+https://bcrypt-generator.com/
+
 
 
 

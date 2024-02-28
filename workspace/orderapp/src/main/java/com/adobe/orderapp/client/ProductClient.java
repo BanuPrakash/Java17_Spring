@@ -17,7 +17,7 @@ public class ProductClient implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
       //  addProduct();
-        printProducts();
+//        printProducts();
        // modify();
     }
 
