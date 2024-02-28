@@ -1987,3 +1987,71 @@ Authorization: Bearer <<token>>
 8) SecurityConfiguration ==> Comment old SecurityConfig [JDBC one]
 
 eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXJyeUBhZG9iZS5jb20iLCJpYXQiOjE3MDkwOTkyNTksImV4cCI6MTcwOTEwMDY5OSwicm9sZXMiOlsiUk9MRV9VU0VSIl19.VSar5khhkH2zO5DKDnMQ6QwrNaHsLQS-07hkS3UQ4-I
+
+====
+
+https://spring.io/guides/tutorials/spring-boot-oauth2
+
+MicroServices
+A microservice architecture is a variant of the service-oriented architecture structural style. 
+It is an architectural pattern that arranges an application as a collection of loosely coupled, fine-grained services, communicating through lightweight protocols.
+
+Hardly we use Relationship between tables 
+	Orders might be i one MS --> RDBMS
+	Products might be in other MS --> MongoDB
+
+=====
+
+SchoolService ==> StudentService
+
+Spring Cloud
+1) Disocvery Server
+2) Microservices will be Discovery Client
+3) Gateway
+4) Configuration Server
+
+1) create a Maven POM project --> Spring Intializer
+<packaging>pom</packing>
+
+2) Add Discovery Server
+A new module ==> Spring Intializer ==> added Eureka Server dependency
+
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoverServerApplication {
+
+application.yml
+
+http://localhost:8761/
+
+3) StudentService
+eureka-clinet, web, mysql, jpa, lombok, actuator
+
+```
+POST: http://localhost:8090/api/students
+{
+    "firstName": "Harry",
+    "lastName": "Potter",
+    "email": "harry@adobe.com",
+    "schoolId": 1
+}
+```
+...
+
+4) SchoolService
+OpenFeign, eureka-client, web, mysql, jpa, lombok, actuator
+Declarative REST Client: Feign creates a dynamic implementation of an interface decorated with JAX-RS or Spring MVC annotations
+
+Similar to HttpExchange
+OpenFeign: instead of RestTemplate / WebClient
+@SpringBootApplication
+@EnableFeignClients
+public class SchoolServiceApplication {
+
+
+POST : http://localhost:8070/api/schools
+{
+    "name": "NPS"
+}
+
+http://localhost:8070/api/schools/1
